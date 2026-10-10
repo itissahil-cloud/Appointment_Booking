@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: clinic_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: clinic_admin
+      POSTGRES_PASSWORD: clinic_secure_password_2026
+      POSTGRES_DB: clinic_booking_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clinic_admin -d clinic_booking_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: clinic_backend
+    restart: always
+    environment:
+      DATABASE_URL: "postgresql://clinic_admin:clinic_secure_password_2026@postgres:5432/clinic_booking_db?schema=public"
+      PORT: 4000
+      NODE_ENV: production
+      JWT_SECRET: "clinic_prod_jwt_secret_key_at_least_32_chars_2026"
+      FRONTEND_URL: "http://localhost:3000"
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: clinic_frontend
+    restart: always
+    environment:
+      NEXT_PUBLIC_API_URL: "http://localhost:4000/api"
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
