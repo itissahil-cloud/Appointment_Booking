@@ -1,3 +1,4 @@
+import { env } from '../../../config/env.js';
 import {
   PaymentProvider,
   CreatePaymentParams,
@@ -12,7 +13,7 @@ export class MockPaymentProvider implements PaymentProvider {
   async createPaymentOrder(params: CreatePaymentParams): Promise<PaymentOrderOutput> {
     const providerOrderId = `MOCK_ORD_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
-    const paymentUrl = `http://localhost:3000/mock-payment?orderId=${providerOrderId}&amount=${params.amountPaisa / 100}`;
+    const paymentUrl = `${env.FRONTEND_URL}/mock-payment?orderId=${providerOrderId}&amount=${params.amountPaisa / 100}`;
 
     return {
       providerOrderId,

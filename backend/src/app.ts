@@ -24,7 +24,12 @@ export const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: [env.FRONTEND_URL, 'http://localhost:3000'],
+    origin: [
+      env.FRONTEND_URL,
+      'https://drskpoddar.in',
+      'https://www.drskpoddar.in',
+      'http://localhost:3000',
+    ],
     credentials: true,
   })
 );

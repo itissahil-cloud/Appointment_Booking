@@ -9,6 +9,8 @@ RUN npm ci
 COPY jsconfig.json tailwind.config.js postcss.config.js ./
 COPY src ./src
 
+ARG NEXT_PUBLIC_API_URL=https://drskpoddar.in/api
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
